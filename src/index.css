@@ -1,0 +1,155 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@import '@fontsource/dm-sans/400.css';
+@import '@fontsource/dm-sans/500.css';
+@import '@fontsource/dm-sans/700.css';
+@import '@fontsource/dm-sans/900.css';
+@import '@fontsource/montserrat/400.css';
+@import '@fontsource/montserrat/500.css';
+@import '@fontsource/montserrat/600.css';
+@import '@fontsource/montserrat/700.css';
+
+:root {
+  --surface: #ffffff;
+  --surface-raised: #f5f7fb;
+  --surface-inset: #eef1f8;
+  --heading: #464555;
+  --body: #737373;
+  --soft: #9a9aa5;
+  --border: #e4e7f0;
+  --brand: #3366ff;
+  --brand-strong: #2952cc;
+  --brand-soft: #eaf0ff;
+  --on-brand: #ffffff;
+  --green: #22ba5c;
+  --green-soft: #e7f8ee;
+  --cyan: #22a4c8;
+  --danger: #d92d20;
+  --danger-soft: #fdecea;
+  --warning: #f79009;
+  --warning-soft: #fef3e2;
+  --shadow: 0 10px 30px -12px rgb(17 24 39 / 0.18);
+}
+
+.dark {
+  --surface: #0f1117;
+  --surface-raised: #171a23;
+  --surface-inset: #1d212c;
+  --heading: #f1f3f7;
+  --body: #a3a9b8;
+  --soft: #7c8294;
+  --border: #272c39;
+  --brand: #5c85ff;
+  --brand-strong: #7ba0ff;
+  --brand-soft: #1a2140;
+  --on-brand: #0b1020;
+  --green: #3ddc7d;
+  --green-soft: #12291d;
+  --cyan: #45c2e0;
+  --danger: #ff6b61;
+  --danger-soft: #2c1512;
+  --warning: #fdb022;
+  --warning-soft: #2c2110;
+  --shadow: 0 10px 30px -12px rgb(0 0 0 / 0.6);
+}
+
+@theme {
+  --font-heading: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-inset: var(--surface-inset);
+  --color-heading: var(--heading);
+  --color-body: var(--body);
+  --color-soft: var(--soft);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-on-brand: var(--on-brand);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-cyan: var(--cyan);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+
+  --shadow-card: var(--shadow);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--surface);
+    color: var(--body);
+    font-family: var(--font-body);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--heading);
+    font-family: var(--font-heading);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+}
+
+@utility skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-inset) 25%,
+    var(--surface-raised) 50%,
+    var(--surface-inset) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+
+  #print-area {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
