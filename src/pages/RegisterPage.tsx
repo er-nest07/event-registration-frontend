@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getEvent } from '../api/events'
 import { register } from '../api/tickets'
 import { fieldErrors, type ApiResult } from '../api/client'
-import type { PublicEvent, RegisterResponse } from '../api/types'
+import type { PublicEvent, RegisterResult } from '../api/types'
 import { Button } from '../components/ui/Button'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Input } from '../components/ui/Input'
@@ -92,7 +92,7 @@ export function RegisterPage() {
     setSubmitting(false)
 
     if (result.ok) {
-      const res = result.data as RegisterResponse
+      const res: RegisterResult = result.data
       navigate(`/tickets/${res.ticketCode}`, { replace: true, state: { fromRegistration: true } })
       return
     }

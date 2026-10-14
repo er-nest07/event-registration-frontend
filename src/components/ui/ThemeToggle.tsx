@@ -5,8 +5,8 @@ type Theme = 'light' | 'dark'
 
 function currentTheme(): Theme {
   const stored = localStorage.getItem('css-theme')
-  if (stored === 'light' || stored === 'dark') return stored
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  if (stored === 'dark') return 'dark'
+  return 'light'
 }
 
 function applyTheme(theme: Theme) {

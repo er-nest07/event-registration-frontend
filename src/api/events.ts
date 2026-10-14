@@ -1,10 +1,14 @@
 import { request } from './client'
-import type { EventListResponse, PublicEvent } from './types'
+import type { EndpointErrorCodes, PublicEvent } from './types'
 
-export function listEvents(page = 1, limit = 20) {
-  return request<EventListResponse>(`/api/events?page=${page}&limit=${limit}`)
+export function listEvents(page = 1, limit = 20, q?: string) {
+  const search = q ? `&q=${encodeURIComponent(q)}` : ''
+  return request<PublicEvent[], EndpointErrorCodes['listEvents']>(
+    'GET',
+    `/api/events?page=${page}&limit=${limit}${search}`,
+  )
 }
 
 export function getEvent(id: string) {
-  return request<PublicEvent>(`/api/events/${id}`)
+  return request<PublicEvent, EndpointErrorCodes['getEvent']>('GET', `/api/events/${id}`)
 }

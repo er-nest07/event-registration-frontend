@@ -41,7 +41,7 @@ export function ResendPage() {
     listEvents()
       .then((result) => {
         if (cancelled) return
-        if (result.ok) setEvents(result.data.data)
+        if (result.ok) setEvents(result.data)
         else setEventsError(true)
       })
       .catch(() => {

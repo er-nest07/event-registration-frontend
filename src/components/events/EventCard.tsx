@@ -1,38 +1,105 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { absoluteUrl } from '../../api/client'
 import type { PublicEvent } from '../../api/types'
 import { formatAccraShort, isHappeningNow } from '../../lib/dates'
 import { Badge } from '../ui/Badge'
 import { MapPinIcon } from '../ui/icons'
-import { EventBanner } from './EventBanner'
 import { SpotsBadge } from './SpotsBadge'
 
-export function EventCard({ event }: { event: PublicEvent }) {
+type Variant = 'compact' | 'focus'
+
+export function EventCard({
+  event,
+  variant = 'compact',
+}: {
+  event: PublicEvent
+  variant?: Variant
+}) {
   const live = isHappeningNow(event.startsAt, event.endsAt)
+  const focus = variant === 'focus'
+  const registerable = !event.hasEnded && event.spotsLeft > 0
+  const [failed, setFailed] = useState(false)
+  const showImage = event.bannerUrl && !failed
 
   return (
-    <Link
-      to={`/events/${event.id}`}
-      className="group flex flex-col overflow-hidden rounded-3xl border bg-surface-raised shadow-card transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-    >
-      <EventBanner bannerUrl={event.bannerUrl} title={event.title} />
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex flex-wrap items-center gap-2">
-          {live && (
-            <Badge tone="green" icon={<span className="h-1.5 w-1.5 rounded-full bg-green" />}>
-              Happening now
-            </Badge>
-          )}
-          <SpotsBadge spotsLeft={event.spotsLeft} />
+    <div className="group relative aspect-[3/4] h-full overflow-hidden rounded-3xl border bg-surface-inset shadow-card transition-transform duration-200 hover:-translate-y-1">
+      <Link
+        to={`/events/${event.id}`}
+        className="absolute inset-0 block focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand"
+      >
+        {showImage ? (
+          <img
+            src={absoluteUrl(event.bannerUrl!)}
+            alt={`Banner for ${event.title}`}
+            onError={() => setFailed(true)}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div
+            className="flex h-full w-full items-end bg-gradient-to-br from-brand via-brand/80 to-cyan p-4"
+            aria-hidden="true"
+          >
+            <span className="flex items-center gap-2 text-sm font-bold text-white/90">
+              <MapPinIcon width={16} height={16} />
+              No photo for this event
+            </span>
+          </div>
+        )}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-4 pt-16 pb-4 transition-opacity duration-300 group-hover:opacity-0 group-focus-within:opacity-0">
+          <h3
+            className={`font-heading leading-snug font-black text-white ${
+              focus ? 'text-xl sm:text-2xl' : 'text-lg'
+            }`}
+          >
+            {event.title}
+          </h3>
+          <p
+            className={`mt-1 text-white/85 ${
+              focus ? 'text-sm sm:text-base' : 'text-xs sm:text-sm'
+            }`}
+          >
+            {formatAccraShort(event.startsAt)}
+          </p>
+          <p className="mt-0.5 flex items-center gap-1.5 text-xs text-white/85 sm:text-sm">
+            <MapPinIcon width={14} height={14} className="shrink-0" />
+            <span className="truncate">{event.venue}</span>
+          </p>
         </div>
-        <h3 className="font-heading text-lg font-black leading-snug text-heading transition-colors group-hover:text-brand">
-          {event.title}
-        </h3>
-        <p className="text-sm text-body">{formatAccraShort(event.startsAt)}</p>
-        <p className="mt-auto flex items-center gap-1.5 text-sm text-soft">
-          <MapPinIcon width={16} height={16} className="shrink-0" />
-          {event.venue}
+      </Link>
+
+      <div className="pointer-events-none absolute top-4 left-4 z-30 flex flex-wrap gap-2">
+        {live && (
+          <Badge
+            tone="green"
+            icon={<span className="h-1.5 w-1.5 rounded-full bg-green" />}
+          >
+            Happening now
+          </Badge>
+        )}
+        <SpotsBadge spotsLeft={event.spotsLeft} />
+      </div>
+
+      <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 px-5 pt-2 pb-14 text-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100">
+        {registerable && (
+          <Link
+            to={`/events/${event.id}/register`}
+            className={`mb-4 hidden rounded-full bg-brand font-bold text-on-brand shadow-[0_8px_20px_-8px_rgba(51,102,255,0.7)] group-hover:inline-flex group-focus-within:inline-flex hover:bg-brand-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+              focus ? 'px-7 py-3 text-base' : 'px-6 py-2.5 text-sm'
+            }`}
+          >
+            Register free
+          </Link>
+        )}
+        <p
+          className={`text-white ${
+            focus ? 'line-clamp-4 text-base sm:text-lg' : 'line-clamp-3 text-sm'
+          }`}
+        >
+          {event.description}
         </p>
       </div>
-    </Link>
+    </div>
   )
 }

@@ -2,26 +2,33 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { ThemeToggle } from '../ui/ThemeToggle'
 import { CloseIcon, MenuIcon } from '../ui/icons'
+import { useIntro } from '../intro/IntroProvider'
+import css267Logo from '../../visuals/CSS267-logo.webp'
 
 const links = [{ to: '/events', label: 'Events' }]
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const { introDone } = useIntro()
 
   return (
-    <header className="relative z-40 bg-transparent">
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <header
+      inert={!introDone}
+      className={`fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-surface/70 backdrop-blur-md transition-[opacity,transform] duration-700 ease-out ${
+        introDone ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-3 opacity-0'
+      }`}
+    >
+      <nav className="flex h-16 w-full items-center justify-between px-4 sm:px-6">
         <Link
           to="/"
-          className="flex items-center gap-2 font-heading text-lg font-black text-heading focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="flex items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           onClick={() => setOpen(false)}
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-sm font-black text-on-brand">
-            CSS
-          </span>
-          <span>
-            Events <span className="text-brand">· KNUST</span>
-          </span>
+          <img
+            src={css267Logo}
+            alt="CSS KNUST logo"
+            className="h-12 w-auto object-contain"
+          />
         </Link>
 
         <div className="hidden items-center gap-6 md:flex">

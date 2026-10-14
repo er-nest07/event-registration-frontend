@@ -1,17 +1,16 @@
-import type { ApiErrorBody, FieldError } from './types'
+import type { ApiErrorBody, ApiErrorCode, FieldError, PageMeta } from './types'
 
 export const API_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(
   /\/+$/,
   '',
 ) ?? 'http://localhost:3000'
 
-export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true'
-
-export type ApiResult<T> =
-  | { ok: true; data: T }
+export type ApiResult<T, C extends string = ApiErrorCode> =
+  | { ok: true; status: number; data: T; meta?: PageMeta }
   | {
       ok: false
-      code: string
+      status: number
+      code: C | 'NETWORK_ERROR' | 'UNEXPECTED_RESPONSE'
       message: string
       details?: FieldError[]
       retryAfterSeconds?: number
@@ -36,40 +35,41 @@ async function parseBody(res: Response): Promise<unknown> {
   }
 }
 
-export async function request<T>(
+export async function request<T, C extends string = ApiErrorCode>(
+  method: 'GET' | 'POST' | 'DELETE',
   path: string,
-  init: { method?: string; body?: unknown } = {},
-): Promise<ApiResult<T>> {
-  const { method = 'GET', body } = init
-
-  const headers: Record<string, string> = {}
-  if (body !== undefined) headers['Content-Type'] = 'application/json'
-
-  if (USE_MOCKS) {
-    const { handleMock } = await import('./mock')
-    return handleMock<T>(method, path, body)
-  }
+  init: { body?: unknown; headers?: Record<string, string> } = {},
+): Promise<ApiResult<T, C>> {
+  const headers: Record<string, string> = { ...init.headers }
+  // Only send Content-Type when there is a body: a header-less GET skips the CORS preflight.
+  if (init.body !== undefined) headers['Content-Type'] = 'application/json'
 
   let res: Response
   try {
     res = await fetch(`${API_BASE}${path}`, {
       method,
       headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
     })
   } catch {
-    return { ok: false, code: 'NETWORK_ERROR', message: 'Network error' }
+    return { ok: false, status: 0, code: 'NETWORK_ERROR', message: 'Could not reach the server' }
   }
 
-  if (res.status === 204) return { ok: true, data: undefined as T }
+  if (res.status === 204) return { ok: true, status: 204, data: undefined as T }
 
   const parsed = await parseBody(res)
 
   if (res.ok) {
     if (parsed === null || typeof parsed !== 'object' || !('data' in parsed)) {
-      return { ok: false, code: 'UNEXPECTED_RESPONSE', message: 'Unexpected response' }
+      return {
+        ok: false,
+        status: res.status,
+        code: 'UNEXPECTED_RESPONSE',
+        message: 'Unexpected response',
+      }
     }
-    return { ok: true, data: (parsed as { data: T }).data }
+    const body = parsed as { data: T; meta?: PageMeta }
+    return { ok: true, status: res.status, data: body.data, meta: body.meta }
   }
 
   const retryAfter = Number(res.headers.get('retry-after'))
@@ -78,7 +78,8 @@ export async function request<T>(
   if (!err || typeof err.code !== 'string') {
     return {
       ok: false,
-      code: `HTTP_${res.status}`,
+      status: res.status,
+      code: 'UNEXPECTED_RESPONSE',
       message: 'Unexpected response',
       retryAfterSeconds: Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : undefined,
     }
@@ -87,9 +88,17 @@ export async function request<T>(
   const hasRetryAfter = Number.isFinite(retryAfter) && retryAfter > 0
   return {
     ok: false,
-    code: err.code,
+    status: res.status,
+    code: err.code as C,
     message: err.message,
     details: err.details,
-    retryAfterSeconds: err.code === 'RATE_LIMITED' ? (hasRetryAfter ? retryAfter : 60) : hasRetryAfter ? retryAfter : undefined,
+    retryAfterSeconds:
+      err.code === 'RATE_LIMITED'
+        ? hasRetryAfter
+          ? retryAfter
+          : 60
+        : hasRetryAfter
+          ? retryAfter
+          : undefined,
   }
 }

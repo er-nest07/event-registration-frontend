@@ -55,6 +55,13 @@ export const ClockIcon = (p: Props) => (
   </svg>
 )
 
+export const CalendarIcon = (p: Props) => (
+  <svg {...base} {...p}>
+    <rect width="18" height="18" x="3" y="4" rx="2" />
+    <path d="M8 2v4M16 2v4M3 10h18" />
+  </svg>
+)
+
 export const ArrowLeftIcon = (p: Props) => (
   <svg {...base} {...p}>
     <path d="m12 19-7-7 7-7" />
@@ -111,5 +118,12 @@ export const RefreshIcon = (p: Props) => (
     <path d="M21 3v5h-5" />
     <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
     <path d="M3 21v-5h5" />
+  </svg>
+)
+
+export const SearchIcon = (p: Props) => (
+  <svg {...base} {...p}>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m20 20-3.6-3.6" />
   </svg>
 )

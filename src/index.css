@@ -10,37 +10,45 @@
 @import '@fontsource/montserrat/500.css';
 @import '@fontsource/montserrat/600.css';
 @import '@fontsource/montserrat/700.css';
+@import '@fontsource-variable/bricolage-grotesque';
 
 :root {
-  --surface: #ffffff;
-  --surface-raised: #f5f7fb;
-  --surface-inset: #eef1f8;
+  /* Alabaster surface ramp: a warm page with white cards floating on it, so the layers
+     read physically and glare is lower than pure white. Text colours are set against
+     this surface to clear WCAG AA (4.5:1) — see AGENTS.md §4. */
+  --surface: #f4f2ed;
+  --surface-raised: #ffffff;
+  --surface-inset: #eae7e0;
   --heading: #464555;
-  --body: #737373;
-  --soft: #9a9aa5;
-  --border: #e4e7f0;
-  --brand: #3366ff;
+  /* 4.76:1 on --surface (AA) */
+  --body: #6b6b6b;
+  --soft: #8f8b84;
+  --border: #e2ded5;
+  /* 4.73:1 on --surface as text (AA); also the button fill and the brand → cyan gradient */
+  --brand: #2d5ef0;
   --brand-strong: #2952cc;
   --brand-soft: #eaf0ff;
   --on-brand: #ffffff;
   --green: #22ba5c;
   --green-soft: #e7f8ee;
   --cyan: #22a4c8;
-  --danger: #d92d20;
+  --danger: #d02a1e;
   --danger-soft: #fdecea;
   --warning: #f79009;
   --warning-soft: #fef3e2;
-  --shadow: 0 10px 30px -12px rgb(17 24 39 / 0.18);
+  --shadow: 0 10px 30px -12px rgb(64 56 44 / 0.16);
 }
 
 .dark {
-  --surface: #0f1117;
-  --surface-raised: #171a23;
-  --surface-inset: #1d212c;
+  /* Same warm-neutral ramp as the light theme, re-tempered for a dark surface;
+     the accents are brightened for legibility on dark. */
+  --surface: #131312;
+  --surface-raised: #1b1b19;
+  --surface-inset: #232321;
   --heading: #f1f3f7;
   --body: #a3a9b8;
   --soft: #7c8294;
-  --border: #272c39;
+  --border: #2d2d2a;
   --brand: #5c85ff;
   --brand-strong: #7ba0ff;
   --brand-soft: #1a2140;
@@ -58,6 +66,7 @@
 @theme {
   --font-heading: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', sans-serif;
 
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
@@ -79,6 +88,36 @@
   --color-warning-soft: var(--warning-soft);
 
   --shadow-card: var(--shadow);
+
+  --animate-rise-in: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-marquee: marquee 26s linear infinite;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise-in,
+  .animate-marquee {
+    animation: none;
+  }
 }
 
 @layer base {
@@ -87,6 +126,7 @@
   }
 
   html {
+    background-color: var(--surface);
     color-scheme: light;
   }
 
@@ -100,6 +140,10 @@
     font-family: var(--font-body);
     font-weight: 500;
     -webkit-font-smoothing: antialiased;
+  }
+
+  #root {
+    overflow-x: clip;
   }
 
   h1,
@@ -131,6 +175,25 @@
   to {
     background-position: -200% 0;
   }
+}
+
+@utility iso-grid {
+  background-image:
+    repeating-linear-gradient(
+      60deg,
+      color-mix(in oklab, var(--border) 60%, transparent) 0 1px,
+      transparent 1px 48px
+    ),
+    repeating-linear-gradient(
+      -60deg,
+      color-mix(in oklab, var(--border) 60%, transparent) 0 1px,
+      transparent 1px 48px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--border) 60%, transparent) 0 1px,
+      transparent 1px 48px
+    );
 }
 
 @media print {

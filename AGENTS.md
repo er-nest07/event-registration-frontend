@@ -28,12 +28,14 @@ Status: not started. Update the checklist in section 12 as work completes.
 
 If this guide and the backend handover ever disagree, **the handover and the backend win**. Tell the project owner so this file can be fixed.
 
-> **Status note (Oct 2026):** the backend repo was unreachable when the frontend was started
-> (GitHub returns "repository not found" for every branch — likely private or renamed), and the
-> handover PDF was not in this folder. `src/api/types.ts` and `src/api/client.ts` were therefore
-> **derived from this file** (sections 5–7). Verify them against `API.md` / `frontend/types.ts`
-> once the backend repo is accessible, especially the `Ticket.event.id` field and the exact
-> register/resend response envelopes.
+> **Status note (Oct 2026):** the backend repo was initially unreachable when the frontend was
+> started, so `src/api/types.ts` and `src/api/client.ts` were first **derived from this file**
+> (sections 5–7). The backend is now accessible on branch `feat/backend-core`
+> (the `main`/`dev` branches only hold an initial scaffold). The API layer has since been
+> **aligned with the backend's `docs/frontend/types.ts`** and verified end-to-end against a
+> locally seeded instance — `PublicEvent` gained `capacity`, register returns the full
+> `RegisterResult` (`{ ticketCode, status, fullName, email, qrUrl, event }`), and the client now
+> surfaces `status` and `meta` and can send custom headers (used by the scanner).
 
 ## 3. Tech stack
 
@@ -47,24 +49,56 @@ If this guide and the backend handover ever disagree, **the handover and the bac
 
 Environment variable: `VITE_API_BASE_URL` (no trailing slash). Local value: `http://localhost:3000`. Never hard-code the URL in components.
 
-## 4. Design system (match the official CSS website)
+## 4. Design system
 
-Source: the `BinaryBond/CSS_WEBSITE` README. **Verify against the live site before finalising**, since the site may have changed.
+The palette, typography and components below are this project's design system, implemented as tokens in `src/index.css`. **The stylesheet is authoritative** — if a value here and the sheet disagree, the sheet wins. It shares the visual language of the official CSS website (`BinaryBond/CSS_WEBSITE`, live at thecssknust.vercel.app) so the two read as one organisation, but the tokens here are the spec for this app.
 
 ### Colours (define as Tailwind theme tokens)
 
+Light mode:
+
 | Token | Hex | Use |
 |---|---|---|
-| `brand-blue` | `#3366FF` | Dominant colour: main sections, accents, primary buttons |
-| `text-body` | `#737373` | Paragraph text |
+| `surface` | `#F4F2ED` | Page background — warm alabaster |
+| `surface-raised` | `#FFFFFF` | Cards and panels that float on the page |
+| `surface-inset` | `#EAE7E0` | Recessed fills: meter tracks, kbd chips, ghost buttons, image placeholders |
+| `border` | `#E2DED5` | Warm hairline |
+| `brand` | `#2D5EF0` | Dominant colour: main sections, accents, primary buttons, links |
+| `brand-strong` | `#2952CC` | Brand hover / pressed |
+| `brand-soft` | `#EAF0FF` | Brand tint (active chips, subtle fills) |
 | `text-heading` | `#464555` | Section titles and subtitles on light backgrounds |
-| `white` | `#FFFFFF` | Section backgrounds, text on blue |
-| `green` | `#22BA5C` | Green buttons or text (WhatsApp related) |
+| `text-body` | `#6B6B6B` | Paragraph text |
+| `text-soft` | `#8F8B84` | Muted/secondary text (kickers, hints) — decorative, never the only carrier of meaning |
+| `on-brand` | `#FFFFFF` | Text on blue |
+| `green` | `#22BA5C` | Success (green buttons/text, WhatsApp related) |
 | `cyan` | `#22A4C8` | Cyan buttons or text (Telegram related) |
+| `danger` | `#D02A1E` | Errors |
+| `warning` | `#F79009` | Warnings |
 | `purple` | `#8C51FF` | Bootcamp accent (Zaptek). Probably not needed here |
 | `black` | `#000000` | Binary Basic Club accent. Probably not needed here |
 
-New elements must follow this palette. For status screens (scanner, ticket states) use green for success, and add clear red and amber tokens for errors and warnings. Always pair colour with text and an icon, never colour alone.
+Dark mode re-tempers the same ramp (`--surface: #131312`, `--surface-raised: #1B1B19`, `--surface-inset: #232321`, `--border: #2D2D2A`) and brightens the accents for legibility on a dark surface (`--brand: #5C85FF`, `--brand-strong: #7BA0FF`, `--brand-soft: #1A2140`, `--on-brand: #0B1020`, `--green: #3DDC7D`, `--cyan: #45C2E0`, `--danger: #FF6B61`, `--warning: #FDB022`). Both themes share one warm-neutral temperature so they read as one product.
+
+New elements must follow this palette. For status screens (scanner, ticket states) use green for success, and clear red and amber for errors and warnings. Always pair colour with text and an icon, never colour alone.
+
+### Surface and text contrast
+
+The page sits on alabaster rather than pure white: it cuts screen glare and lets white cards, inset fills and warm borders read as physical layers.
+
+Text colours are set against the surface they sit on so they clear WCAG AA (4.5:1 for normal text). Alabaster is darker than white, which is precisely why the greys and blues hold the values they do:
+
+| Text on `--surface` | Contrast |
+|---|---|
+| `text-heading` `#464555` | 8.37:1 |
+| `text-body` `#6B6B6B` | 4.76:1 |
+| `brand` `#2D5EF0` | 4.73:1 |
+| `danger` `#D02A1E` | 4.66:1 |
+| `text-soft` `#8F8B84` | 3.03:1 — muted/decorative only |
+
+Re-run the numbers before changing any of these: they are contrast-derived, not chosen by eye. Two things to keep in step:
+
+- `brand` and `text-body` are tuned **for this surface**. A blue light enough to sit on pure white will not carry small text on alabaster — if the surface is ever lightened or darkened, revisit `--brand` and `--body` with it.
+- `text-soft`, `green` and `warning` sit below 4.5:1 and are only ever used for decorative or status text that also carries a word and an icon — never colour alone.
 
 ### Typography
 
@@ -102,7 +136,9 @@ Out of scope: admin UI, user accounts, login, payments.
 
 ### Page behaviour
 
-**Event list.** `GET /api/events?page=1&limit=20`. Shows only published events that have not ended, soonest first. Each card: banner (or placeholder), title, start time in Accra time, venue, spots left. When `spotsLeft === 0` show "Sold out" but still link to the detail page. Needs loading skeletons, an empty state ("No upcoming events right now. Check back soon."), an error state with retry, and pagination from `meta.totalPages`. If the user lands on a page past the end (empty `data`), send them to page 1. Show "Happening now" when `startsAt <= now <= endsAt`. Do not poll.
+**Event list.** `GET /api/events?page=1&limit=50`, plus the optional `q` search parameter (see below). Shows only published events that have not ended, soonest first. The page is a **story until you type, then it is a result list**: in story mode events hang off a chronological rail grouped into month chapters (poster, title, start time in Accra time, venue, a capacity meter); in find mode they become a flat result list with the same facts. The sticky instrument row carries the search field (and the month index in story mode only). Needs loading skeletons, an empty state ("No upcoming events right now. Check back soon."), a distinct empty-search state, an error state with retry, and a 429 state with a countdown and no automatic retry. When `spotsLeft === 0` show "Sold out" but still link to the detail page. Show "Happening now" when `startsAt <= now <= endsAt`. Do not poll, and do not refetch on window focus.
+
+**Search on the event list.** The page owns `limit=50` and appends the next page behind a "Show more events" button while `meta.total` has not been reached — it does not put the page number in the URL. The query is debounced (280ms), a term shorter than 2 characters is treated as no search, and the term lives in React state only, never in the URL or in browser storage. Wait for a `?q=`-capable backend (`feat/backend-core`); the endpoint trims the value, matches `title` or `venue` case-insensitively with `%` and `_` taken literally, and caps the term at 100 characters.
 
 **Event detail.** `GET /api/events/:id`. Shows banner, title, full description (use `whitespace: pre-line`), venue, start and end times, spots left. Register button: disabled with "Sold out" when `spotsLeft === 0`; disabled with "This event has ended" when `hasEnded` is true (trust the server value, never recompute from the browser clock); otherwise enabled. A 404 (unknown, draft or cancelled event) and a 400 (malformed id) both show "Event not found" with a link back to the list.
 
@@ -152,7 +188,7 @@ Offline use at the door: a "Print / save as PDF" button (`window.print()` with p
 
 | Action | Request |
 |---|---|
-| List events | `GET /api/events?page=&limit=` |
+| List events | `GET /api/events?page=&limit=&q=` (`q` optional; matches title or venue) |
 | One event | `GET /api/events/:id` |
 | Register | `POST /api/events/:id/register` |
 | View ticket | `GET /api/tickets/:code` |
@@ -270,7 +306,9 @@ src/
     scanner.ts       # checkIn
   components/
     ui/              # Button, Card, Input, Badge, Dialog (shared, branded)
-    events/          # EventCard, EventBanner, SpotsBadge
+    events/          # EventCard, EventPoster, SpotsBadge, and the event-list rail
+                     #   (chapters.ts, SeasonRail, RailEvent, EventBody, NowMarker,
+                     #    MonthStrip, EventSearch, StatusBadge, CapacityMeter, rail.ts)
     ticket/          # TicketCard, QrImage
   pages/
     EventListPage.tsx
@@ -308,24 +346,27 @@ src/
 
 - [x] Project setup (Vite, React, TS, Tailwind, router)
 - [x] Theme tokens, self-hosted fonts, dark/light toggle
+- [x] Warm alabaster surface ramp (light + dark) with AA-compensated body/brand/red text — see section 4 "Surface ramp"; contrast is script-verified, not eyeballed
 - [x] Shared components (Button, Card, Input, Dialog, skeletons)
 - [x] Navbar and footer matching the official site
-- [x] API layer (`client.ts`, `types.ts`, endpoint functions) — derived from this file, see section 2 status note
-- [x] Event list page (loading, empty, error, sold out, pagination)
+- [x] API layer (`client.ts`, `types.ts`, endpoint functions) — aligned with the backend's `docs/frontend/types.ts`, see section 2 status note
+- [x] Event list page (loading, empty, error, sold out, show more) — redesigned as the "What's on" season rail with client-side search
+- [x] Event list search — `?q=` added to the backend (`feat/backend-core`, `tests/search.test.ts`) and wired through `listEvents(page, limit, q)`; unverified in a browser, see section 13
 - [x] Event detail page (sold out, ended, not found)
 - [x] Registration form (validation, phone rules, field errors, redirect)
 - [x] Ticket page (all states, cancel dialog, print, download QR)
 - [x] Resend page (uninformative message, 429 countdown)
 - [x] Rate-limit handling everywhere
-- [ ] Door scanner (optional)
+- [ ] Door scanner page (optional) — `src/api/scanner.ts` exists; the UI page is not built
 - [ ] Security review against section 8
 - [ ] Test checklist run (22 scenarios) — needs the real seeded backend
 - [ ] Deployment and CORS/APP_BASE_URL configured
 
-Pages currently run against a **mock API layer** (`src/api/mock.ts`, enabled by
-`VITE_USE_MOCKS=true` in `.env.development`) because the backend was unavailable. Set
-`VITE_USE_MOCKS=false` and point `VITE_API_BASE_URL` at the real API to go live — no page code
-changes needed.
+The pages now call the **real backend** through `src/api/` (no mock layer — it was removed).
+Run the backend on `http://localhost:3000` (repo `CSS-Developers/event-registration`, branch
+`feat/backend-core`; see section 9) and `VITE_API_BASE_URL` in `.env.development` points at it.
+The `/api/events` list and the register → ticket → QR → cancel/resend and scanner check-in flows
+have been verified against a locally seeded instance.
 
 ## 13. Open questions and blockers
 
@@ -341,10 +382,12 @@ Fill in answers as they arrive.
 | 6 | Is returning the ticket code from register acceptable at launch? | |
 | 7 | `TRUST_PROXY` setting in production; is the shared-IP rate limit acceptable for campus events? | |
 | 8 | Support contact or wording for registration or email failures | |
-| 9 | Organisation name, logo, brand colours (the colours in section 4 come from the official site's repo README) | |
+| 9 | Organisation name, logo, brand colours (section 4 defines the tokens this app ships; the original values were seeded from the official site's repo README) | |
 | 10 | Privacy notice and terms links for the registration form | |
 | 11 | How do the official site's Events page and this app connect? Do the website's events link to `/events/:id/register` here, and are the website's events the same as the backend's events? | |
 | 12 | Confirm the official site's exact URL, and whether its design has changed since the README | |
+| 13 | The "What's on" season rail (section 5) has passed typecheck, lint, build, an SSR render of the loading state + rail + result row against live API data, and the API contract — but it has never been seen or clicked in a browser, because no browser tooling was available. Someone with eyes should check dark mode, mobile (360px), the sticky instrument row against the fixed navbar, the month-index highlight, and keyboard traversal before it ships. | |
+| 14 | The search term is deliberately not in the URL, so a search cannot be linked or restored on reload. Is that acceptable, or do we want `?q=` in the URL (with the analytics/referrer caveats)? | |
 
 ## 14. Known backend limitations (design around them)
 
