@@ -45,6 +45,14 @@ export function Navbar() {
               {link.label}
             </NavLink>
           ))}
+          <a
+            href="https://www.thecssknust.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm font-bold text-heading transition-colors hover:text-brand"
+          >
+            Main CSS site <span aria-hidden="true">↗</span>
+          </a>
           <ThemeToggle />
         </div>
 
@@ -78,6 +86,14 @@ export function Navbar() {
               {link.label}
             </NavLink>
           ))}
+          <a
+            href="https://www.thecssknust.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-1 block rounded-xl px-3 py-2.5 text-sm font-bold text-heading hover:bg-brand-soft hover:text-brand"
+          >
+            Main CSS website ↗
+          </a>
         </div>
       )}
     </header>

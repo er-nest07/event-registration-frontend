@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { Link } from 'react-router-dom'
 import { useIntro } from '../intro/IntroProvider'
 import learningImg from '../../visuals/learning.webp'
 import hackathonImg from '../../visuals/learning1_hackathon.webp'
@@ -325,7 +326,7 @@ export function HeroSection() {
     <section
       onMouseMove={move}
       onMouseLeave={leave}
-      className="relative z-10 flex min-h-[calc(100svh-16.5rem)] items-center justify-center overflow-hidden"
+      className="relative z-10 flex min-h-[calc(100svh-11rem)] flex-col items-center justify-center gap-7 overflow-hidden py-14 text-center sm:gap-8"
     >
       {imagesOn && (
         <>
@@ -411,6 +412,31 @@ export function HeroSection() {
           </span>
         </span>
       </h1>
+
+      <div className="relative z-10 flex flex-col items-center gap-5 px-4">
+        <p className="label-mono text-[10px] text-soft sm:text-xs">
+          CSS / KNUST <span className="mx-2 text-brand">—</span> THE EVENT DESK
+        </p>
+        <p className="max-w-lg text-sm leading-6 text-body sm:text-base">
+          Find your people. Learn something new. Build what comes next.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <Link
+            to="/events"
+            className="inline-flex min-h-12 items-center justify-center rounded-full bg-brand px-6 py-3 text-sm font-bold text-on-brand shadow-card transition duration-200 hover:-translate-y-0.5 hover:bg-brand-strong focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+          >
+            Explore events <span aria-hidden="true" className="ml-2">↗</span>
+          </Link>
+          <a
+            href="https://www.thecssknust.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-12 items-center justify-center rounded-full border border-border bg-surface-raised/80 px-6 py-3 text-sm font-bold text-heading transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+          >
+            Meet CSS KNUST
+          </a>
+        </div>
+      </div>
     </section>
   )
 }
