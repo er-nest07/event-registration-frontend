@@ -6,7 +6,7 @@ const tones: Record<Tone, string> = {
   green: 'bg-green-soft text-green',
   warning: 'bg-warning-soft text-warning',
   danger: 'bg-danger-soft text-danger',
-  brand: 'bg-brand-soft text-brand',
+  brand: 'bg-surface-inset text-heading',
   neutral: 'bg-surface-inset text-body',
 }
 

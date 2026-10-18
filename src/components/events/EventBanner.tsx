@@ -26,7 +26,7 @@ export function EventBanner({
         />
       ) : (
         <div
-          className="flex h-full w-full items-end bg-gradient-to-br from-brand via-brand/80 to-cyan p-4"
+          className="flex h-full w-full items-end bg-gradient-to-br from-black via-neutral-800 to-neutral-600 p-4"
           aria-hidden="true"
         >
           <span className="flex items-center gap-2 text-sm font-bold text-white/90">

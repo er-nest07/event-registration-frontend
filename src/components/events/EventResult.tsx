@@ -8,7 +8,7 @@ import { EventPoster } from './EventPoster'
  */
 export function EventResult({ event }: { event: PublicEvent }) {
   return (
-    <li className="border-t py-5 first:border-t-0">
+    <li className="border-t py-5 transition-colors first:border-t-0 hover:bg-surface-raised/60">
       <div className="flex items-start gap-4 md:gap-5">
         <div className="w-16 shrink-0 md:w-20">
           <EventPoster event={event} />

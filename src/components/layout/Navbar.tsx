@@ -21,7 +21,7 @@ export function Navbar() {
       <nav className="flex h-16 w-full items-center justify-between px-4 sm:px-6">
         <Link
           to="/"
-          className="flex items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="flex items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading"
           onClick={() => setOpen(false)}
         >
           <img

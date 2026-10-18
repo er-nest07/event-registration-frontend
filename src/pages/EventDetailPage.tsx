@@ -14,9 +14,9 @@ import {
   CalendarIcon,
   ClockIcon,
   DownloadIcon,
-  MapPinIcon,
   TicketIcon,
 } from '../components/ui/icons'
+import { FactBand } from '../components/events/FactBand'
 import { downloadIcs, googleCalendarUrl } from '../lib/calendar'
 import { accraDateParts, formatAccraRange, formatAccraTime, isHappeningNow } from '../lib/dates'
 import { uiMessage } from '../lib/errorMessage'
@@ -124,7 +124,7 @@ export function EventDetailPage() {
         <div className="flex items-center justify-between gap-4 border-b pb-4">
           <Link
             to="/events"
-            className="inline-flex items-center gap-1.5 text-[11px] font-black tracking-[0.18em] text-body uppercase transition-colors hover:text-brand"
+            className="label-mono inline-flex items-center gap-1.5 text-[11px] text-body transition-colors hover:text-brand"
           >
             <ArrowLeftIcon width={15} height={15} />
             All events
@@ -137,18 +137,31 @@ export function EventDetailPage() {
         {/* Poster masthead */}
         <div className="grid gap-x-8 gap-y-8 pt-8 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-8">
-            <p className="text-[11px] font-black tracking-[0.22em] text-brand uppercase">
+            <p className="label-mono text-[11px] text-brand">
               KNUST Computer Science Society
             </p>
             <PosterTitle text={event.title} />
-            <p className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-semibold text-body">
-              <span className="inline-flex items-center gap-1.5">
-                <MapPinIcon width={16} height={16} className="text-brand" />
-                {event.venue}
-              </span>
-              <span className="text-soft">·</span>
-              <span>{formatAccraTime(event.startsAt)}–{formatAccraTime(event.endsAt)} Accra</span>
-            </p>
+            <FactBand
+              className="mt-7"
+              facts={[
+                {
+                  label: 'Date',
+                  value: `${parts.weekday} ${Number(parts.day)} ${parts.month}`,
+                },
+                { label: 'Venue', value: event.venue },
+                {
+                  label: 'Spots left',
+                  value: event.hasEnded ? 'Closed' : soldOut ? 'Full' : event.spotsLeft,
+                  note: event.hasEnded
+                    ? 'This event has ended'
+                    : soldOut
+                      ? 'No seats remaining'
+                      : event.capacity > 0
+                        ? `of ${event.capacity} seats · free entry`
+                        : 'Free entry · no account needed',
+                },
+              ]}
+            />
 
             <ImagePlate bannerUrl={event.bannerUrl} title={event.title} />
           </div>
@@ -218,12 +231,12 @@ export function EventDetailPage() {
                           <span className="absolute top-4 h-full w-px bg-border" aria-hidden="true" />
                         )}
                         <span
-                          className="relative z-10 mt-2 h-2.5 w-2.5 rounded-full bg-brand ring-4 ring-surface"
+                          className="relative z-10 mt-2 h-2.5 w-2.5 rounded-full bg-black ring-4 ring-surface"
                           aria-hidden="true"
                         />
                       </span>
                       <div className={i < timeline.length - 1 ? 'pb-8' : ''}>
-                        <p className="text-[11px] font-black tracking-[0.2em] text-soft uppercase">
+                        <p className="label-mono text-[11px] text-soft">
                           {step.label}
                         </p>
                         <p className="mt-1 font-display text-3xl tracking-tight text-heading">
@@ -234,7 +247,7 @@ export function EventDetailPage() {
                   ))}
                 </ol>
 
-                <p className="mt-6 border-t pt-4 text-[11px] font-black tracking-[0.14em] text-soft uppercase">
+                <p className="mt-6 border-t pt-4 font-mono text-xs font-semibold text-soft">
                   {formatAccraRange(event.startsAt, event.endsAt)}
                 </p>
               </section>
@@ -289,7 +302,7 @@ function Reveal({
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-center gap-4">
-      <span className="h-px w-8 shrink-0 bg-brand" aria-hidden="true" />
+      <span className="h-px w-8 shrink-0 bg-black" aria-hidden="true" />
       <h2 className="font-display text-2xl font-black tracking-tight text-heading sm:text-3xl">
         {children}
       </h2>
@@ -316,7 +329,7 @@ function DateBlock({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: EASE }}
     >
-      <div className="flex items-center justify-between text-[11px] font-black tracking-[0.18em] text-soft uppercase">
+      <div className="label-mono flex items-center justify-between text-[11px] text-soft">
         <span>Date</span>
         <span className="text-brand">Free entry</span>
       </div>
@@ -376,7 +389,7 @@ function ImagePlate({ bannerUrl, title }: { bannerUrl: string | null; title: str
           className="h-full w-full object-cover"
         />
       ) : (
-        <div className="relative h-full w-full bg-gradient-to-br from-brand via-brand/80 to-cyan">
+        <div className="relative h-full w-full bg-gradient-to-br from-black via-neutral-800 to-neutral-600">
           <div className="iso-grid absolute inset-0 opacity-30" aria-hidden="true" />
         </div>
       )}
@@ -403,7 +416,7 @@ function Ticker({ items }: { items: string[] }) {
   )
 
   return (
-    <div className="mt-10 overflow-hidden border-y border-black/10 bg-brand py-3 text-on-brand">
+    <div className="mt-10 overflow-hidden border-y border-black/10 bg-black py-3 text-on-brand">
       <div className="flex w-max motion-safe:animate-marquee">
         {renderGroup('a')}
         {renderGroup('b')}
@@ -440,7 +453,7 @@ function RegistrationPass({
   return (
     <div className="relative overflow-hidden rounded-2xl bg-surface-raised shadow-card">
       <div className="pointer-events-none absolute inset-0 rounded-2xl border" aria-hidden="true" />
-      <div className="flex items-center justify-between px-6 pt-5 text-[11px] font-black tracking-[0.18em] uppercase">
+      <div className="label-mono flex items-center justify-between px-6 pt-5 text-[11px]">
         <span className="text-soft">Registration</span>
         <span className="text-brand">Free</span>
       </div>
@@ -452,7 +465,7 @@ function RegistrationPass({
             <p className="mt-2 text-sm text-body">Open to all students · no account needed</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-black tracking-[0.14em] text-soft uppercase">Seats left</p>
+            <p className="label-mono text-[10px] text-soft">Seats left</p>
             <p className="font-heading text-xl font-black text-heading">
               {soldOut ? '0' : event.spotsLeft}
               <span className="text-soft">/{event.capacity}</span>
@@ -476,7 +489,7 @@ function RegistrationPass({
             aria-label="Seats reserved"
           >
             <div
-              className="h-full rounded-full bg-brand transition-[width] duration-500"
+              className="h-full rounded-full bg-black transition-[width] duration-500"
               style={{ width: `${reservedPct}%` }}
             />
           </div>
@@ -504,7 +517,7 @@ function RegistrationPass({
 
       <div className="flex items-center justify-between gap-4 px-6 py-5">
         <div>
-          <p className="text-[10px] font-black tracking-[0.14em] text-soft uppercase">Add to calendar</p>
+          <p className="label-mono text-[10px] text-soft">Add to calendar</p>
           <div className="mt-2 flex items-center gap-3 text-sm font-bold text-brand">
             <a
               href={googleCalendarUrl(event)}

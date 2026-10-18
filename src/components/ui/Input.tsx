@@ -23,7 +23,7 @@ export function Input({ label, hint, error, onValueChange, id, className = '', .
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy}
         onChange={(e) => onValueChange(e.target.value)}
-        className={`h-12 w-full rounded-2xl border bg-surface px-4 text-base text-heading placeholder:text-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
+        className={`h-12 w-full rounded-2xl border bg-surface px-4 text-base text-heading placeholder:text-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading ${
           error ? 'border-danger' : 'border-border'
         } ${className}`}
         {...rest}

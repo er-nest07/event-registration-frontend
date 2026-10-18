@@ -95,7 +95,7 @@ export function ResendPage() {
 
   return (
     <div className="mx-auto max-w-xl px-4 py-10 sm:px-6">
-      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-soft text-brand">
+      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-inset text-heading">
         <MailIcon />
       </span>
       <h1 className="mt-5 text-3xl">Resend my ticket</h1>
@@ -138,7 +138,7 @@ export function ResendPage() {
                   id="event-select"
                   value={selectedEvent}
                   onChange={(e) => setSelectedEvent(e.target.value)}
-                  className="h-12 w-full rounded-2xl border border-border bg-surface px-4 text-base text-heading focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                  className="h-12 w-full rounded-2xl border border-border bg-surface px-4 text-base text-heading focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading"
                 >
                   <option value="">Choose an event…</option>
                   {events?.map((event) => (
@@ -178,10 +178,50 @@ export function ResendPage() {
 
       <p className="mt-6 text-center text-sm text-body">
         Looking for an event instead?{' '}
-        <Link to="/events" className="font-bold text-brand hover:underline">
+        <Link to="/events" className="font-bold text-heading hover:underline">
           Browse events
         </Link>
       </p>
+
+      <section className="mt-10 border-t pt-6">
+        <p className="label-mono text-[11px] text-body">Questions</p>
+        <h2 className="mt-2 font-display text-2xl font-black tracking-tight text-heading">
+          Before you ask
+        </h2>
+        <div className="mt-4 divide-y">
+          {[
+            {
+              q: 'Can I resend a ticket for someone else?',
+              a: "The link only reaches the address you give us — the ticket code stays with whoever registered. If someone else needs a copy, they should forward it.",
+            },
+            {
+              q: 'How long does the email take?',
+              a: 'Usually seconds, occasionally a minute. Check spam if it doesn\u2019t arrive.',
+            },
+            {
+              q: 'I re-registered with a new email — which ticket works?',
+              a: 'The newest one. Old codes stop working the moment you cancel or re-register.',
+            },
+            {
+              q: 'Lost the code but still have the QR?',
+              a: 'The QR carries the same code. Scan it or contact the organiser.',
+            },
+          ].map((item) => (
+            <details key={item.q} className="group py-4">
+              <summary className="flex cursor-pointer items-center justify-between gap-4 font-heading text-base font-bold text-heading focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading">
+                <span>{item.q}</span>
+                <span
+                  aria-hidden="true"
+                  className="text-heading transition-transform duration-200 group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-sm leading-relaxed text-body">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

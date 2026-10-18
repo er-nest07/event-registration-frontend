@@ -11,6 +11,7 @@
 @import '@fontsource/montserrat/600.css';
 @import '@fontsource/montserrat/700.css';
 @import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/jetbrains-mono';
 
 :root {
   /* Alabaster surface ramp: a warm page with white cards floating on it, so the layers
@@ -24,7 +25,7 @@
   --body: #6b6b6b;
   --soft: #8f8b84;
   --border: #e2ded5;
-  /* 4.73:1 on --surface as text (AA); also the button fill and the brand → cyan gradient */
+  /* 4.73:1 on --surface as text (AA); also the button fill and the brand → cyan-strong gradient */
   --brand: #2d5ef0;
   --brand-strong: #2952cc;
   --brand-soft: #eaf0ff;
@@ -32,6 +33,10 @@
   --green: #22ba5c;
   --green-soft: #e7f8ee;
   --cyan: #22a4c8;
+  /* The hero headline's gradient far stop. --cyan measures only 2.60:1 here, under the 3:1
+     large-text floor, so gradient text ends at this stop instead: 4.74:1, matched to the
+     --brand end's 4.73:1 so neither end of the ramp carries more weight than the other. */
+  --cyan-strong: #0b7590;
   --danger: #d02a1e;
   --danger-soft: #fdecea;
   --warning: #f79009;
@@ -56,6 +61,9 @@
   --green: #3ddc7d;
   --green-soft: #12291d;
   --cyan: #45c2e0;
+  /* --cyan already clears dark surfaces (8.90:1), so the gradient stop aliases it: the
+     headline keeps the same bright ramp on dark that it has today. */
+  --cyan-strong: #45c2e0;
   --danger: #ff6b61;
   --danger-soft: #2c1512;
   --warning: #fdb022;
@@ -67,6 +75,7 @@
   --font-heading: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Bricolage Grotesque Variable', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
@@ -82,6 +91,7 @@
   --color-green: var(--green);
   --color-green-soft: var(--green-soft);
   --color-cyan: var(--cyan);
+  --color-cyan-strong: var(--cyan-strong);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
   --color-warning: var(--warning);
@@ -194,6 +204,35 @@
       color-mix(in oklab, var(--border) 60%, transparent) 0 1px,
       transparent 1px 48px
     );
+}
+
+/* The label layer: the site's technical micro-copy — counts, times, kickers, chapter numbers. One
+   utility so every one of them is tracked and weighted the same, and so the whole layer can be
+   retuned in one place.
+   Weight stops at 600 on purpose: JetBrains Mono Variable tops out at 800, so a `font-black` here
+   would be synthesised and smear at these sizes. */
+@utility caret {
+  display: inline-block;
+  width: 0.07em;
+  height: 0.78em;
+  margin-left: 0.05em;
+  vertical-align: -0.02em;
+  background: currentColor;
+  animation: blink 1.05s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
 }
 
 @media print {

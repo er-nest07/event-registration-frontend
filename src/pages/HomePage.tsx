@@ -17,22 +17,15 @@ type State =
 
 function ExhibitionSkeleton() {
   return (
-    <div className="flex items-center justify-center gap-4 sm:gap-6" aria-hidden="true">
-      <div className="hidden overflow-hidden rounded-3xl border lg:block lg:basis-[20%]">
-        <Skeleton className="aspect-[3/4] rounded-none" />
-      </div>
-      <div className="hidden overflow-hidden rounded-3xl border sm:block sm:basis-[45%]">
-        <Skeleton className="aspect-[3/4] rounded-none" />
-      </div>
-      <div className="w-full overflow-hidden rounded-3xl border sm:basis-[48%]">
-        <Skeleton className="aspect-[3/4] rounded-none" />
-      </div>
-      <div className="hidden overflow-hidden rounded-3xl border sm:block sm:basis-[45%]">
-        <Skeleton className="aspect-[3/4] rounded-none" />
-      </div>
-      <div className="hidden overflow-hidden rounded-3xl border lg:block lg:basis-[20%]">
-        <Skeleton className="aspect-[3/4] rounded-none" />
-      </div>
+    <div className="flex gap-4 overflow-hidden pt-2 pb-4" aria-hidden="true">
+      {[0, 1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="w-[74%] shrink-0 overflow-hidden rounded-3xl border sm:w-[44%] lg:w-[30%]"
+        >
+          <Skeleton className="aspect-[3/4] rounded-none" />
+        </div>
+      ))}
     </div>
   )
 }
@@ -78,7 +71,7 @@ export function HomePage() {
           introDone ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
-        <div className="mx-auto max-w-7xl px-4 pt-12 pb-16 sm:px-6">
+        <div className="mx-auto max-w-7xl px-4 pt-8 pb-16 sm:px-6">
           <h2 className="mb-8 text-center font-display text-3xl font-black text-heading sm:text-4xl">
             Upcoming events
           </h2>

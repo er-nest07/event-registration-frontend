@@ -18,7 +18,13 @@ export default function App() {
     <IntroProvider active={isHome}>
       <div className="flex min-h-screen flex-col">
         <Navbar />
-        <main className="flex-1 pt-16">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-16 focus:left-4 focus:z-[60] focus:rounded-full focus:bg-surface-raised focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-heading focus:shadow-card focus:outline-2 focus:outline-offset-2 focus:outline-heading"
+        >
+          Skip to main content
+        </a>
+        <main id="main-content" className="flex-1 pt-16" tabIndex={-1}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/events" element={<EventListPage />} />

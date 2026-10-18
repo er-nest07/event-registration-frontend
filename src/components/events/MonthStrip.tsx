@@ -31,14 +31,14 @@ export function MonthStrip({ months, activeId, onPick }: Props) {
             type="button"
             aria-current={active ? 'true' : undefined}
             onClick={() => onPick(month.id)}
-            className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
+            className={`label-mono flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[11px] transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading ${
               active
-                ? 'border-brand bg-brand-soft text-brand'
+                ? 'border-black bg-black text-white shadow-[0_2px_8px_-2px_rgba(0,0,0,0.3)]'
                 : 'bg-surface text-body hover:border-brand hover:text-brand'
             }`}
           >
             {month.label}
-            <span className={active ? 'font-black' : 'font-black text-soft'}>{month.count}</span>
+            <span className={active ? '' : 'text-soft'}>{month.count}</span>
           </button>
         )
       })}

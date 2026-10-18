@@ -28,7 +28,7 @@ export function ThemeToggle() {
       type="button"
       aria-label={`Switch to ${next} mode`}
       onClick={() => setTheme(next)}
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface-raised text-heading transition-colors hover:bg-surface-inset focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface-raised text-heading transition-colors hover:bg-surface-inset focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {theme === 'dark' ? (

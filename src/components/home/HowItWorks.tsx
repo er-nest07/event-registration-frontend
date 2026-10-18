@@ -32,7 +32,7 @@ export function HowItWorks() {
         {STEPS.map((step) => (
           <Card key={step.num} className="p-6">
             <div className="flex items-start gap-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-on-brand">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-sm font-bold text-on-brand">
                 {step.num}
               </div>
               <div>

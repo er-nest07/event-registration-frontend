@@ -59,7 +59,7 @@ export function EventSearch({ value, onValueChange }: Props) {
         spellCheck={false}
         enterKeyHint="search"
         aria-controls="event-list"
-        className="h-12 w-full appearance-none rounded-full border bg-surface pr-14 pl-11 text-[15px] text-heading placeholder:text-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand [&::-webkit-search-cancel-button]:hidden"
+        className="h-12 w-full appearance-none rounded-full border bg-surface pr-14 pl-11 text-[15px] text-heading placeholder:text-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading [&::-webkit-search-cancel-button]:hidden"
       />
       {value ? (
         <button
@@ -69,7 +69,7 @@ export function EventSearch({ value, onValueChange }: Props) {
             input.current?.focus()
           }}
           aria-label="Clear search"
-          className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-soft transition-colors hover:bg-surface-inset hover:text-heading focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-soft transition-colors hover:bg-surface-inset hover:text-heading focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading"
         >
           <CloseIcon width={16} height={16} />
         </button>

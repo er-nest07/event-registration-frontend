@@ -150,7 +150,7 @@ export function TicketPage() {
 
       <div id="print-area" className="rounded-3xl border bg-surface-raised p-6 shadow-card sm:p-8">
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-widest text-brand">Your ticket</p>
+          <p className="text-xs font-black uppercase tracking-widest text-heading">Your ticket</p>
           <h1 className="mt-2 text-2xl sm:text-3xl">{ticket.fullName}</h1>
           <p className="mt-1 font-heading text-lg font-black text-heading">{ticket.event.title}</p>
         </div>
@@ -165,7 +165,7 @@ export function TicketPage() {
             <p className="font-heading text-lg font-black text-danger">This ticket was cancelled.</p>
             <Link
               to={`/events/${ticket.event.id}`}
-              className="mt-3 inline-block text-sm font-bold text-brand hover:underline"
+              className="mt-3 inline-block text-sm font-bold text-heading hover:underline"
             >
               View the event
             </Link>

@@ -15,7 +15,7 @@ const STATIC_WORDS = [
   { text: 'is', gradient: false },
 ]
 const FLIP_WORDS = ['coming', 'here!']
-const GRADIENT = 'bg-gradient-to-r from-brand to-cyan bg-clip-text text-transparent'
+const GRADIENT = 'bg-gradient-to-r from-brand to-cyan-strong bg-clip-text text-transparent'
 const CLIP_HIDDEN = 'inset(0% 100% 0% 0%)'
 const CLIP_SHOWN = 'inset(0% 0% 0% 0%)'
 

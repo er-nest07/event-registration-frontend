@@ -26,7 +26,7 @@ export function EventCard({
     <div className="group relative aspect-[3/4] h-full overflow-hidden rounded-3xl border bg-surface-inset shadow-card transition-transform duration-200 hover:-translate-y-1">
       <Link
         to={`/events/${event.id}`}
-        className="absolute inset-0 block focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand"
+        className="absolute inset-0 block focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-heading"
       >
         {showImage ? (
           <img
@@ -38,7 +38,7 @@ export function EventCard({
           />
         ) : (
           <div
-            className="flex h-full w-full items-end bg-gradient-to-br from-brand via-brand/80 to-cyan p-4"
+            className="flex h-full w-full items-end bg-gradient-to-br from-black via-neutral-800 to-neutral-600 p-4"
             aria-hidden="true"
           >
             <span className="flex items-center gap-2 text-sm font-bold text-white/90">
@@ -85,7 +85,7 @@ export function EventCard({
         {registerable && (
           <Link
             to={`/events/${event.id}/register`}
-            className={`mb-4 hidden rounded-full bg-brand font-bold text-on-brand shadow-[0_8px_20px_-8px_rgba(51,102,255,0.7)] group-hover:inline-flex group-focus-within:inline-flex hover:bg-brand-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+            className={`mb-4 hidden rounded-full bg-black font-bold text-white shadow-[0_8px_20px_-8px_rgba(0,0,0,0.5)] pointer-events-auto group-hover:inline-flex group-focus-within:inline-flex hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
               focus ? 'px-7 py-3 text-base' : 'px-6 py-2.5 text-sm'
             }`}
           >

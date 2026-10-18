@@ -4,6 +4,7 @@ import { listEvents } from '../api/events'
 import type { PublicEvent } from '../api/types'
 import { EventResult } from '../components/events/EventResult'
 import { EventSearch } from '../components/events/EventSearch'
+import { SealBadge } from '../components/events/SealBadge'
 import { MonthStrip, type MonthEntry } from '../components/events/MonthStrip'
 import { SeasonRail } from '../components/events/SeasonRail'
 import { RAIL_GRID, RAIL_LINE } from '../components/events/rail'
@@ -36,9 +37,16 @@ export function EventListPage() {
   const [attempt, setAttempt] = useState(0)
   const [activeMonth, setActiveMonth] = useState<string | undefined>()
   const [limitedUntil, setLimitedUntil] = useState<number | undefined>()
+  const [showBackToTop, setShowBackToTop] = useState(false)
 
   const wait = useCountdown(limitedUntil)
   const requestId = useRef(0)
+
+  useEffect(() => {
+    const onScroll = () => setShowBackToTop(window.scrollY > 600)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   // Search is debounced so one keystroke is one request, not one request per character.
   useEffect(() => {
@@ -172,31 +180,31 @@ export function EventListPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
-      <div className="border-b pt-8 pb-4">
-        <span className="text-[11px] font-black tracking-[0.18em] text-body uppercase">
-          KNUST Computer Science Society
-        </span>
+      <div className="flex items-end justify-between gap-4 border-b pt-8 pb-4">
+        <div>
+          <p className="label-mono text-[11px] text-soft">
+            KNUST Computer Science Society
+          </p>
+          <h1 className="mt-2 font-display text-4xl font-black tracking-tight text-heading sm:text-5xl">
+            What&apos;s on
+          </h1>
+        </div>
+        <div className="hidden shrink-0 md:block">
+          <SealBadge size={96} />
+        </div>
       </div>
 
-      <div className="pt-8">
-        <h1 className="font-display text-5xl font-black tracking-tight text-heading sm:text-6xl">
-          What&apos;s on
-        </h1>
-        <p className="mt-4 max-w-[54ch] text-[15px] leading-7 text-body">
-          Free events, instant tickets. Register in seconds — your ticket appears on screen and
-          arrives by email.
-        </p>
-        <p role="status" className="mt-3 text-sm font-semibold text-soft">
-          {stat}
-        </p>
-      </div>
-
-      <div className="sticky top-16 z-30 -mx-4 mt-8 border-y border-border/60 bg-surface/85 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
-        <div className="flex flex-col gap-2.5">
-          <EventSearch value={typed} onValueChange={setTyped} />
+      <div className="sticky top-16 z-30 -mx-4 mt-6 border-y border-border/60 bg-surface/85 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
+        <div className="flex flex-col gap-2.5 md:flex-row md:items-center md:gap-4">
+          <div className="w-full md:max-w-xs">
+            <EventSearch value={typed} onValueChange={setTyped} />
+          </div>
           {!searching && months.length > 0 && (
             <MonthStrip months={months} activeId={activeMonth} onPick={jumpToMonth} />
           )}
+          <p role="status" aria-live="polite" aria-atomic="true" className="ml-auto hidden font-mono text-sm font-semibold text-soft md:block">
+            {stat}
+          </p>
         </div>
       </div>
 
@@ -215,6 +223,18 @@ export function EventListPage() {
 
         {ready && events.length === 0 && (
           <div className="rounded-3xl border bg-surface-raised px-6 py-14 text-center">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-surface-inset">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-soft">
+                {searching ? (
+                  <path d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" />
+                ) : (
+                  <>
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                  </>
+                )}
+              </svg>
+            </div>
             <p className="font-heading text-xl font-black text-heading">
               {searching ? `Nothing matches “${term}”.` : 'No upcoming events right now.'}
             </p>
@@ -260,21 +280,46 @@ export function EventListPage() {
             {remaining > 0 && (
               <div className="mt-8 flex justify-center">
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   disabled={loadingMore || wait > 0}
                   onClick={() => void loadMore()}
                 >
-                  {loadingMore
-                    ? 'Loading…'
-                    : wait > 0
-                      ? `Try again in ${formatWait(wait)}`
-                      : `Show ${Math.min(PAGE_SIZE, remaining)} more events`}
+                  {loadingMore ? (
+                    <>
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 12a9 9 0 11-6.219-8.56" />
+                      </svg>
+                      Loading…
+                    </>
+                  ) : wait > 0 ? (
+                    `Try again in ${formatWait(wait)}`
+                  ) : (
+                    <>
+                      Show {Math.min(PAGE_SIZE, remaining)} more events
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 5v14M5 12l7 7 7-7" />
+                      </svg>
+                    </>
+                  )}
                 </Button>
               </div>
             )}
           </>
         )}
       </div>
+
+      {showBackToTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })}
+          className="fixed right-4 bottom-4 z-40 flex h-11 w-11 items-center justify-center rounded-full border bg-surface-raised text-heading shadow-card transition-all hover:bg-surface-inset focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading"
+          aria-label="Back to top"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 19V5M5 12l7-7 7 7" />
+          </svg>
+        </button>
+      )}
     </div>
   )
 }

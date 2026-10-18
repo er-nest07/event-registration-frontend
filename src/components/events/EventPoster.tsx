@@ -12,7 +12,7 @@ export function EventPoster({ event }: { event: PublicEvent }) {
     <Link
       to={`/events/${event.id}`}
       aria-label={`View ${event.title}`}
-      className="group relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border bg-surface-inset shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+      className="group relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border bg-surface-inset shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-heading"
     >
       {showImage ? (
         <img
@@ -24,7 +24,7 @@ export function EventPoster({ event }: { event: PublicEvent }) {
         />
       ) : (
         <div
-          className="flex h-full w-full items-end bg-gradient-to-br from-brand via-brand/80 to-cyan p-4"
+          className="flex h-full w-full items-end bg-gradient-to-br from-black via-neutral-800 to-neutral-600 p-4"
           aria-hidden="true"
         >
           <span className="flex items-center gap-2 text-sm font-bold text-white/90">

@@ -5,6 +5,14 @@ const year = new Date().getFullYear()
 export function Footer() {
   return (
     <footer className="mt-16 bg-black">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <p
+          aria-hidden="true"
+          className="font-display text-[clamp(3.5rem,14vw,9rem)] leading-[0.9] font-black tracking-[-0.02em] text-heading opacity-15"
+        >
+          See you at the &middot; door
+        </p>
+      </div>
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         <div>
           <p className="font-heading text-lg font-black text-white">CSS Events</p>

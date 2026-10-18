@@ -27,14 +27,14 @@ export function CapacityMeter({ spotsLeft, capacity }: Props) {
     spotsLeft <= 0 ? 'text-danger' : limited ? 'text-warning' : 'text-body'
 
   return (
-    <p className="flex items-center gap-2.5">
+    <p className="flex flex-col gap-1.5">
       <span
         aria-hidden="true"
-        className="h-1.5 w-14 shrink-0 overflow-hidden rounded-full bg-surface-inset"
+        className="block h-1 w-full overflow-hidden rounded-full bg-surface-inset"
       >
         <span className={`block h-full rounded-full ${colour}`} style={{ width: `${percent}%` }} />
       </span>
-      <span className={`text-xs font-bold ${textColour}`}>{label}</span>
+      <span className={`font-mono text-xs font-semibold ${textColour}`}>{label}</span>
     </p>
   )
 }
