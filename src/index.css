@@ -13,6 +13,12 @@
 @import '@fontsource-variable/bricolage-grotesque';
 @import '@fontsource-variable/jetbrains-mono';
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 :root {
   /* Alabaster surface ramp: a warm page with white cards floating on it, so the layers
      read physically and glare is lower than pure white. Text colours are set against

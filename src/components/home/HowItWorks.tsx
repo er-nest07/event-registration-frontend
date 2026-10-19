@@ -20,7 +20,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section className="mt-14">
+    <section id="how-it-works" className="mt-14 scroll-mt-24">
       <h2 className="text-center font-display text-3xl font-black text-heading sm:text-4xl">
         How it works
       </h2>

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { listEvents } from '../api/events'
 import type { PublicEvent } from '../api/types'
 import { ExhibitionRow } from '../components/events/ExhibitionRow'
+import { CollageHero } from '../components/hero/CollageHero'
 import { HeroSection } from '../components/hero/HeroSection'
 import { HowItWorks } from '../components/home/HowItWorks'
 import { useIntro } from '../components/intro/IntroProvider'
@@ -61,7 +63,22 @@ export function HomePage() {
   return (
     <>
       <div className="mx-auto max-w-6xl px-4 pt-10 sm:px-6">
-        <HeroSection />
+        <AnimatePresence mode="wait">
+          {introDone ? (
+            <motion.div
+              key="collage"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.45, ease: 'easeOut' }}
+            >
+              <CollageHero />
+            </motion.div>
+          ) : (
+            <motion.div key="intro" exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+              <HeroSection />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <section

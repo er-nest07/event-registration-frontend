@@ -139,10 +139,12 @@ const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 
 
 export function HeroSection() {
   const reduced = useReducedMotion()
-  const { completeIntro } = useIntro()
+  const { introDone, completeIntro } = useIntro()
+  const [skip] = useState(() => introDone)
   const spotRef = useRef<HTMLDivElement>(null)
   const [imagesOn, setImagesOn] = useState(false)
-  const [flipped, setFlipped] = useState(Boolean(reduced))
+  const [flipped, setFlipped] = useState(Boolean(reduced) || skip)
+  const instant = Boolean(reduced) || skip
   const touringRef = useRef(false)
   const runRef = useRef(0)
   const frameRef = useRef<number | null>(null)
@@ -252,8 +254,9 @@ export function HeroSection() {
   }, [apply])
 
   useEffect(() => {
-    if (reduced) {
+    if (reduced || skip) {
       setImagesOn(true)
+      setFlipped(true)
       completeIntro()
       return
     }
@@ -266,10 +269,10 @@ export function HeroSection() {
       window.clearTimeout(introTimer)
       stopTour()
     }
-  }, [reduced, stopTour, completeIntro])
+  }, [reduced, skip, stopTour, completeIntro])
 
   useEffect(() => {
-    if (reduced || !imagesOn) return
+    if (reduced || skip || !imagesOn) return
     let cancelled = false
 
     const wait = Math.max(0, TOUR_START_MS - IMAGES_ON_MS)
@@ -300,13 +303,13 @@ export function HeroSection() {
       window.clearTimeout(timer)
       stopTour()
     }
-  }, [reduced, imagesOn, startTour, stopTour])
+  }, [reduced, skip, imagesOn, startTour, stopTour])
 
   useEffect(() => {
-    if (reduced) return
+    if (reduced || skip) return
     const flipTimer = window.setTimeout(() => setFlipped(true), REVEAL_END_MS)
     return () => clearTimeout(flipTimer)
-  }, [reduced])
+  }, [reduced, skip])
 
   const move = (e: ReactMouseEvent<HTMLElement>) => {
     stopTour()
@@ -355,19 +358,19 @@ export function HeroSection() {
       <h1 className="relative z-10 flex w-fit flex-col items-center font-display text-[clamp(2.4rem,12vw,4.5rem)] leading-[0.95] font-extrabold tracking-tight text-heading md:text-[clamp(2.1rem,9vw,7.5rem)]">
         <span className="block whitespace-nowrap text-center">
           <span className="mr-[0.18em] inline-block">
-            <Tword word={TYPING.words[0]} reduced={reduced} />
+            <Tword word={TYPING.words[0]} reduced={instant} />
           </span>
           <span className="mr-[0.18em] inline-block">
-            <Tword word={TYPING.words[1]} reduced={reduced} />
+            <Tword word={TYPING.words[1]} reduced={instant} />
           </span>
           <span className="mr-[0.18em] hidden md:inline-block">
-            <Tword word={TYPING.words[2]} reduced={reduced} />
+            <Tword word={TYPING.words[2]} reduced={instant} />
           </span>
         </span>
 
         <span className="block whitespace-nowrap text-center">
           <span className="mr-[0.18em] inline-block md:hidden">
-            <Tword word={TYPING.words[2]} reduced={reduced} />
+            <Tword word={TYPING.words[2]} reduced={instant} />
           </span>
           <span className="relative inline-grid place-items-center">
             {FLIP_WORDS.map((word) => (
@@ -380,7 +383,7 @@ export function HeroSection() {
                 <motion.span
                   key="here"
                   className={`col-start-1 row-start-1 inline-block ${GRADIENT}`}
-                  initial={reduced ? false : { opacity: 0, y: '0.35em', filter: 'blur(8px)' }}
+                  initial={instant ? false : { opacity: 0, y: '0.35em', filter: 'blur(8px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={reduced ? { opacity: 0 } : { opacity: 0, y: '-0.35em', filter: 'blur(8px)' }}
                   transition={{ duration: 0.45 }}
