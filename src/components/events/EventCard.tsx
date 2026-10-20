@@ -72,8 +72,8 @@ export function EventCard({
       <div className="pointer-events-none absolute top-4 left-4 z-30 flex flex-wrap gap-2">
         {live && (
           <Badge
-            tone="green"
-            icon={<span className="h-1.5 w-1.5 rounded-full bg-green" />}
+            tone="brand-tint"
+            icon={<span className="h-1.5 w-1.5 rounded-full bg-brand" />}
           >
             Happening now
           </Badge>

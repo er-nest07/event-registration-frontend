@@ -5,6 +5,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from '../ui/icons'
 import { EventCard } from './EventCard'
 
 const GAP_PX = 16
+const LOOK_IDLE_MS = 700
+const LOOK_MIN_DELTA = 2
+
+/** `right` means new cards are arriving from the right, and vice versa. */
+export type RailLook = 'left' | 'right' | 'down'
 
 function RailButton({
   side,
@@ -32,9 +37,18 @@ function RailButton({
   )
 }
 
-export function ExhibitionRow({ events }: { events: PublicEvent[] }) {
+export function ExhibitionRow({
+  events,
+  onLook,
+}: {
+  events: PublicEvent[]
+  /** Called with the side new cards arrive from while swiping, then `down` once it settles. */
+  onLook?: (look: RailLook) => void
+}) {
   const reduced = useReducedMotion()
   const scrollerRef = useRef<HTMLDivElement>(null)
+  const lastLeft = useRef(0)
+  const idleTimer = useRef<number | null>(null)
   const [atStart, setAtStart] = useState(true)
   const [atEnd, setAtEnd] = useState(false)
 
@@ -45,18 +59,37 @@ export function ExhibitionRow({ events }: { events: PublicEvent[] }) {
     setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 1)
   }, [])
 
-  useEffect(() => {
+  const handleScroll = useCallback(() => {
     const el = scrollerRef.current
     if (!el) return
     syncEdges()
-    el.addEventListener('scroll', syncEdges, { passive: true })
+
+    if (!onLook) return
+    const delta = el.scrollLeft - lastLeft.current
+    lastLeft.current = el.scrollLeft
+    if (Math.abs(delta) < LOOK_MIN_DELTA) return
+
+    onLook(delta > 0 ? 'right' : 'left')
+    if (idleTimer.current !== null) window.clearTimeout(idleTimer.current)
+    idleTimer.current = window.setTimeout(() => onLook('down'), LOOK_IDLE_MS)
+  }, [onLook, syncEdges])
+
+  useEffect(() => {
+    const el = scrollerRef.current
+    if (!el) return
+    lastLeft.current = el.scrollLeft
+    syncEdges()
+    el.addEventListener('scroll', handleScroll, { passive: true })
     const observer = new ResizeObserver(syncEdges)
     observer.observe(el)
     return () => {
-      el.removeEventListener('scroll', syncEdges)
+      el.removeEventListener('scroll', handleScroll)
       observer.disconnect()
+      if (idleTimer.current !== null) window.clearTimeout(idleTimer.current)
+      idleTimer.current = null
+      onLook?.('down')
     }
-  }, [syncEdges])
+  }, [handleScroll, syncEdges, onLook])
 
   const step = (direction: 1 | -1) => {
     const el = scrollerRef.current
@@ -86,13 +119,13 @@ export function ExhibitionRow({ events }: { events: PublicEvent[] }) {
 
       <div
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-surface to-transparent transition-opacity duration-200 ${
+        className={`rail-fade-left pointer-events-none absolute inset-y-0 left-0 w-7 transition-opacity duration-200 ${
           atStart ? 'opacity-0' : 'opacity-100'
         }`}
       />
       <div
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-surface to-transparent transition-opacity duration-200 ${
+        className={`rail-fade-right pointer-events-none absolute inset-y-0 right-0 w-7 transition-opacity duration-200 ${
           atEnd ? 'opacity-0' : 'opacity-100'
         }`}
       />

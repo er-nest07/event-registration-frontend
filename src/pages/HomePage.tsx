@@ -1,21 +1,30 @@
-import { useCallback, useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { listEvents } from '../api/events'
 import type { PublicEvent } from '../api/types'
 import { ExhibitionRow } from '../components/events/ExhibitionRow'
-import { CollageHero } from '../components/hero/CollageHero'
+import type { RailLook } from '../components/events/ExhibitionRow'
 import { HeroSection } from '../components/hero/HeroSection'
+import { LogoHero } from '../components/hero/LogoHero'
 import { HowItWorks } from '../components/home/HowItWorks'
+import { UpcomingHeadline } from '../components/home/UpcomingHeadline'
 import { useIntro } from '../components/intro/IntroProvider'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Skeleton } from '../components/ui/Skeleton'
 import { uiMessage } from '../lib/errorMessage'
+import type { BotLook } from '../components/hero/Bot'
 
 type State =
   | { status: 'loading' }
   | { status: 'error'; message: string; retryable: boolean }
   | { status: 'ready'; events: PublicEvent[] }
+
+const GAZE: Record<RailLook, BotLook> = {
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0.3 },
+  right: { x: 1, y: 0.3 },
+}
 
 function ExhibitionSkeleton() {
   return (
@@ -35,7 +44,15 @@ function ExhibitionSkeleton() {
 export function HomePage() {
   const [state, setState] = useState<State>({ status: 'loading' })
   const [attempt, setAttempt] = useState(0)
+  const [look, setLook] = useState<RailLook>('down')
   const { introDone } = useIntro()
+
+  // One trigger for both bots: the moment the heading arrives, the bot leaves the
+  // hero and rises out of the words, so it reads as the same bot moving down the page.
+  const headingRef = useRef<HTMLDivElement>(null)
+  const botHere = useInView(headingRef, { amount: 1, margin: '0px 0px -28% 0px' })
+
+  const handleLook = useCallback((next: RailLook) => setLook(next), [])
 
   const load = useCallback(async () => {
     setState({ status: 'loading' })
@@ -66,12 +83,12 @@ export function HomePage() {
         <AnimatePresence mode="wait">
           {introDone ? (
             <motion.div
-              key="collage"
+              key="logo"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.45, ease: 'easeOut' }}
             >
-              <CollageHero />
+              <LogoHero botAway={botHere} />
             </motion.div>
           ) : (
             <motion.div key="intro" exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
@@ -89,9 +106,7 @@ export function HomePage() {
         }`}
       >
         <div className="mx-auto max-w-7xl px-4 pt-8 pb-16 sm:px-6">
-          <h2 className="mb-8 text-center font-display text-3xl font-black text-heading sm:text-4xl">
-            Upcoming events
-          </h2>
+          <UpcomingHeadline ref={headingRef} look={GAZE[look]} revealed={botHere} />
 
           {(state.status === 'loading' || (state.status === 'ready' && !introDone)) && (
             <ExhibitionSkeleton />
@@ -115,7 +130,7 @@ export function HomePage() {
 
           {state.status === 'ready' && introDone && state.events.length > 0 && (
             <div className="animate-rise-in">
-              <ExhibitionRow events={state.events} />
+              <ExhibitionRow events={state.events} onLook={handleLook} />
               <div className="mt-10 text-center">
                 <Link
                   to="/events"

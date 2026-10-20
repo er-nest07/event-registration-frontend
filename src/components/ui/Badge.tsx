@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
 
-type Tone = 'green' | 'warning' | 'danger' | 'brand' | 'neutral'
+type Tone = 'green' | 'warning' | 'danger' | 'brand' | 'brand-tint' | 'neutral'
 
 const tones: Record<Tone, string> = {
   green: 'bg-green-soft text-green',
   warning: 'bg-warning-soft text-warning',
   danger: 'bg-danger-soft text-danger',
   brand: 'bg-surface-inset text-heading',
+  'brand-tint': 'bg-brand-soft text-brand',
   neutral: 'bg-surface-inset text-body',
 }
 

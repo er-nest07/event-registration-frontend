@@ -10,7 +10,7 @@ export function SpotsBadge({ spotsLeft }: { spotsLeft: number }) {
     )
   }
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-green-soft px-3 py-1 text-xs font-bold text-green">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-xs font-bold text-brand">
       <CheckIcon width={14} height={14} />
       {spotsLeft} spot{spotsLeft === 1 ? '' : 's'} left
     </span>

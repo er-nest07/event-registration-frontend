@@ -1,7 +1,5 @@
 @import 'tailwindcss';
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 @import '@fontsource/dm-sans/400.css';
 @import '@fontsource/dm-sans/500.css';
 @import '@fontsource/dm-sans/700.css';
@@ -48,33 +46,6 @@
   --warning: #f79009;
   --warning-soft: #fef3e2;
   --shadow: 0 10px 30px -12px rgb(64 56 44 / 0.16);
-}
-
-.dark {
-  /* Same warm-neutral ramp as the light theme, re-tempered for a dark surface;
-     the accents are brightened for legibility on dark. */
-  --surface: #131312;
-  --surface-raised: #1b1b19;
-  --surface-inset: #232321;
-  --heading: #f1f3f7;
-  --body: #a3a9b8;
-  --soft: #7c8294;
-  --border: #2d2d2a;
-  --brand: #5c85ff;
-  --brand-strong: #7ba0ff;
-  --brand-soft: #1a2140;
-  --on-brand: #0b1020;
-  --green: #3ddc7d;
-  --green-soft: #12291d;
-  --cyan: #45c2e0;
-  /* --cyan already clears dark surfaces (8.90:1), so the gradient stop aliases it: the
-     headline keeps the same bright ramp on dark that it has today. */
-  --cyan-strong: #45c2e0;
-  --danger: #ff6b61;
-  --danger-soft: #2c1512;
-  --warning: #fdb022;
-  --warning-soft: #2c2110;
-  --shadow: 0 10px 30px -12px rgb(0 0 0 / 0.6);
 }
 
 @theme {
@@ -144,10 +115,6 @@
   html {
     background-color: var(--surface);
     color-scheme: light;
-  }
-
-  html.dark {
-    color-scheme: dark;
   }
 
   body {
@@ -239,6 +206,34 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
+}
+
+/* The events rail's edge fade. A straight `surface → transparent` ramp reads as a flat milk band
+   lying on the poster, so the stops follow a curve instead: the colour falls away fastest in the
+   first few pixels and then tails off gently, which uncovers the card without a visible end line.
+   The ramp still starts fully opaque — a card sits chopped off under the scroller's clip line,
+   and anything less leaves a seam — so the curve buys its lightness by shortening the opaque zone
+   rather than lowering the peak. Two directions, because a gradient can't be mirrored. */
+@utility rail-fade-left {
+  background-image: linear-gradient(
+    to right,
+    var(--surface) 0%,
+    color-mix(in oklab, var(--surface) 55%, transparent) 28%,
+    color-mix(in oklab, var(--surface) 21%, transparent) 58%,
+    color-mix(in oklab, var(--surface) 6%, transparent) 80%,
+    transparent 100%
+  );
+}
+
+@utility rail-fade-right {
+  background-image: linear-gradient(
+    to left,
+    var(--surface) 0%,
+    color-mix(in oklab, var(--surface) 55%, transparent) 28%,
+    color-mix(in oklab, var(--surface) 21%, transparent) 58%,
+    color-mix(in oklab, var(--surface) 6%, transparent) 80%,
+    transparent 100%
+  );
 }
 
 @media print {

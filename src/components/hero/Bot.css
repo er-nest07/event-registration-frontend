@@ -1,0 +1,277 @@
+.bot-container {
+  --bot-glow: var(--brand);
+  /* Blue shell ramp from the design-system blues: a white specular highlight melting
+     through a pale tint into the brand blue, with deep-navy recesses for the visor.
+     SVG presentation attributes cannot resolve var(), so these are applied as inline
+     styles on the elements they colour. */
+  --bot-shell-hi: #ffffff;
+  --bot-shell-mid: #dbe6ff;
+  --bot-shell-lo: var(--brand);
+  --bot-line: var(--brand-strong);
+  --bot-visor-hi: #16203a;
+  --bot-visor: #0a1020;
+  --bot-visor-deep: #04060f;
+  --bot-eye: #eaf1ff;
+  position: relative;
+  display: block;
+  width: 100%;
+  transform-origin: 50% 100%;
+  animation: bot-peek-a-boo 6.4s cubic-bezier(0.45, 0, 0.55, 1) 0.9s infinite;
+}
+
+.bot-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  cursor: pointer;
+  /* a tight contact shadow plus a wide ambient one gives the body real weight */
+  filter: drop-shadow(0 2px 3px rgb(10 20 60 / 0.2)) drop-shadow(0 16px 26px rgb(20 18 30 / 0.16));
+  animation: bot-float 4.6s ease-in-out infinite;
+}
+
+.bot-arm,
+.bot-hand,
+.bot-head,
+.bot-thrust {
+  transform-box: fill-box;
+}
+
+.bot-arm {
+  transform-origin: 50% 10%;
+}
+
+.bot-arm.left {
+  animation: bot-arm-sway 3.6s ease-in-out infinite;
+}
+
+.bot-arm.right {
+  animation: bot-arm-sway 3.6s ease-in-out infinite reverse;
+}
+
+/* hands trail the arms slightly, like follow-through on a wave */
+.bot-hand {
+  transform-origin: 50% 0%;
+}
+
+.bot-hand.left {
+  animation: bot-hand-sway 3.6s ease-in-out -0.45s infinite;
+}
+
+.bot-hand.right {
+  animation: bot-hand-sway 3.6s ease-in-out -0.45s infinite reverse;
+}
+
+.bot-head {
+  transform-origin: 50% 92%;
+  animation: bot-head-bob 4.6s ease-in-out infinite;
+}
+
+/* gaze: the eyes slide inside the visor and the head turns on the neck */
+.bot-eyes,
+.bot-head-look {
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bot-eyes {
+  transform: translate(var(--bot-look-x, 0px), var(--bot-look-y, 0px));
+}
+
+.bot-head-look {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: rotate(var(--bot-look-tilt, 0deg)) translateY(var(--bot-look-drop, 0px));
+}
+
+.bot-thrust {
+  transform-origin: 50% 50%;
+  animation: bot-thrust 1.8s ease-in-out infinite;
+}
+
+.bot-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 58%;
+  height: 12px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.3), transparent 70%);
+  pointer-events: none;
+  animation: bot-shadow-pulse 4.6s ease-in-out infinite;
+}
+
+.bot-container.boop .bot-svg {
+  animation: bot-boop 0.7s ease;
+}
+
+.bot-container.printing .bot-arm.left,
+.bot-container.printing .bot-arm.right {
+  animation-duration: 0.5s;
+}
+
+.bot-container.printing .bot-hand.left,
+.bot-container.printing .bot-hand.right {
+  animation-duration: 0.5s;
+}
+
+.bot-container.printing .bot-thrust {
+  animation-duration: 0.55s;
+}
+
+.bot-container.away .bot-svg {
+  animation: none;
+  opacity: 0.85;
+  filter: grayscale(0.55) drop-shadow(0 2px 3px rgb(10 20 60 / 0.14))
+    drop-shadow(0 16px 26px rgb(20 18 30 / 0.12));
+}
+
+.bot-container.away .bot-head {
+  animation: none;
+  transform: rotate(7deg) translateY(2px);
+}
+
+.bot-container.away .bot-hand {
+  animation: none;
+}
+
+.bot-container.away .bot-thrust {
+  animation: none;
+  opacity: 0.25;
+}
+
+.bot-container.doctor .bot-thrust {
+  animation-duration: 0.9s;
+}
+
+.bot-container.doctor .bot-svg {
+  filter: drop-shadow(0 0 18px var(--bot-glow)) drop-shadow(0 2px 3px rgb(10 20 60 / 0.2))
+    drop-shadow(0 16px 26px rgb(20 18 30 / 0.16));
+}
+
+/* a bot that belongs to the page rather than the hero: it holds its pose and only
+   turns its gaze, so the peek-a-boo slide is off */
+.bot-container.bot-watch {
+  animation: none;
+  transform: none;
+}
+
+@keyframes bot-peek-a-boo {
+  0%,
+  20% {
+    transform: translateX(42%) rotate(-2deg);
+  }
+  36% {
+    transform: translateX(-50%) rotate(-11deg);
+  }
+  52% {
+    transform: translateX(-42%) rotate(-7deg);
+  }
+  68%,
+  100% {
+    transform: translateX(42%) rotate(-2deg);
+  }
+}
+
+@keyframes bot-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes bot-arm-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes bot-hand-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-7deg);
+  }
+}
+
+@keyframes bot-head-bob {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes bot-thrust {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes bot-shadow-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translateX(-50%) scaleX(0.92);
+  }
+  50% {
+    opacity: 0.35;
+    transform: translateX(-50%) scaleX(1.04);
+  }
+}
+
+@keyframes bot-boop {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-14px) scale(1.04, 0.96);
+  }
+  55% {
+    transform: translateY(2px) scale(0.97, 1.03);
+  }
+  75% {
+    transform: translateY(-4px) scale(1.01, 0.99);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bot-container {
+    animation: none;
+    transform: translateX(-34%) rotate(-7deg);
+  }
+
+  .bot-svg,
+  .bot-arm,
+  .bot-hand,
+  .bot-head,
+  .bot-thrust,
+  .bot-shadow {
+    animation: none;
+  }
+
+  .bot-eyes,
+  .bot-head-look {
+    transition: none;
+  }
+}
