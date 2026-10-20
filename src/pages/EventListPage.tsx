@@ -4,7 +4,6 @@ import { listEvents } from '../api/events'
 import type { PublicEvent } from '../api/types'
 import { EventResult } from '../components/events/EventResult'
 import { EventSearch } from '../components/events/EventSearch'
-import { SealBadge } from '../components/events/SealBadge'
 import { MonthStrip, type MonthEntry } from '../components/events/MonthStrip'
 import { SeasonRail } from '../components/events/SeasonRail'
 import { RAIL_GRID, RAIL_LINE } from '../components/events/rail'
@@ -15,6 +14,7 @@ import { Skeleton } from '../components/ui/Skeleton'
 import { isHappeningNow } from '../lib/dates'
 import { uiMessage } from '../lib/errorMessage'
 import { formatWait, useCountdown } from '../lib/useCountdown'
+import neonMark from '../visuals/css_neon_mark.svg'
 
 const PAGE_SIZE = 50
 const DEBOUNCE_MS = 280
@@ -190,7 +190,7 @@ export function EventListPage() {
           </h1>
         </div>
         <div className="hidden shrink-0 md:block">
-          <SealBadge size={96} />
+          <img src={neonMark} alt="" className="h-24 w-24" />
         </div>
       </div>
 
