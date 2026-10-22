@@ -38,7 +38,7 @@ export function MonthStrip({ months, activeId, onPick }: Props) {
             }`}
           >
             {month.label}
-            <span className={active ? '' : 'text-soft'}>{month.count}</span>
+            <span className={active ? '' : 'text-body'}>{month.count}</span>
           </button>
         )
       })}

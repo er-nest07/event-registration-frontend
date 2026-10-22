@@ -21,7 +21,7 @@ export function RailEvent({ event, index = 0 }: { event: PublicEvent; index?: nu
         <span className="font-display text-lg leading-none font-black text-heading tabular-nums md:text-2xl">
           {Number(day)}
         </span>
-        <span className="label-mono mt-1 text-[9px] text-soft">
+        <span className="label-mono mt-1 text-[9px] text-body">
           {accraShortMonth(event.startsAt)}
         </span>
       </div>

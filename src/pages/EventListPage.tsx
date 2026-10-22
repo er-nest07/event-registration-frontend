@@ -182,7 +182,7 @@ export function EventListPage() {
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
       <div className="flex items-end justify-between gap-4 border-b pt-8 pb-4">
         <div>
-          <p className="label-mono text-[11px] text-soft">
+          <p className="label-mono text-[11px] text-body">
             KNUST Computer Science Society
           </p>
           <h1 className="mt-2 font-display text-4xl font-black tracking-tight text-heading sm:text-5xl">
@@ -194,7 +194,7 @@ export function EventListPage() {
         </div>
       </div>
 
-      <div className="sticky top-16 z-30 -mx-4 mt-6 border-y border-border/60 bg-surface/85 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
+      <div className="sticky top-16 z-30 -mx-4 mt-6 border-y border-border bg-surface/95 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
         <div className="flex flex-col gap-2.5 md:flex-row md:items-center md:gap-4">
           <div className="w-full md:max-w-xs">
             <EventSearch value={typed} onValueChange={setTyped} />
@@ -202,7 +202,7 @@ export function EventListPage() {
           {!searching && months.length > 0 && (
             <MonthStrip months={months} activeId={activeMonth} onPick={jumpToMonth} />
           )}
-          <p role="status" aria-live="polite" aria-atomic="true" className="ml-auto hidden font-mono text-sm font-semibold text-soft md:block">
+          <p role="status" aria-live="polite" aria-atomic="true" className="ml-auto hidden font-mono text-sm font-semibold text-body md:block">
             {stat}
           </p>
         </div>

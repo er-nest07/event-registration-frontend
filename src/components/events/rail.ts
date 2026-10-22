@@ -6,4 +6,4 @@
 export const RAIL_GRID = 'grid grid-cols-[2.5rem_1fr] gap-x-3 md:grid-cols-[4rem_1fr] md:gap-x-6'
 
 /** The rule itself. Pair with a `relative isolate` ancestor so it sits behind every stop. */
-export const RAIL_LINE = 'pointer-events-none absolute inset-y-0 left-5 -z-10 w-px bg-border md:left-8'
+export const RAIL_LINE = 'pointer-events-none absolute inset-y-0 left-5 -z-10 w-px bg-body/20 md:left-8'

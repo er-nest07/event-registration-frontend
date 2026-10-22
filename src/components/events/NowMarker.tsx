@@ -30,12 +30,12 @@ export function NowMarker({ next }: { next?: PublicEvent }) {
         <p className="label-mono text-[11px] text-brand">Today</p>
         <p className="mt-1 font-mono text-xs text-body">{accraTodayLabel()}</p>
         {next ? (
-          <p className="mt-0.5 truncate text-sm text-soft">
+          <p className="mt-0.5 truncate text-sm text-body">
             {live ? 'Happening now · ' : `Next · ${untilInWords(next.startsAt)} · `}
             <span className="font-semibold text-heading">{next.title}</span>
           </p>
         ) : (
-          <p className="mt-0.5 text-sm text-soft">Nothing on the calendar yet.</p>
+          <p className="mt-0.5 text-sm text-body">Nothing on the calendar yet.</p>
         )}
       </div>
     </div>

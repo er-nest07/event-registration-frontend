@@ -25,7 +25,7 @@ export function SeasonRail({ chapters, next }: { chapters: Chapter[]; next?: Pub
               <span className="col-start-2 flex items-baseline gap-3">
                 {/* The number is decoration on top of the month it labels, so it stays out of the
                     heading's readable name. */}
-                <span className="label-mono text-[11px] text-soft opacity-70" aria-hidden="true">
+                <span className="label-mono text-[11px] text-soft" aria-hidden="true">
                   {String(chapterIndex + 1).padStart(2, '0')}
                 </span>
                 <span className="font-display text-3xl leading-none font-black tracking-tight text-heading sm:text-4xl">
@@ -34,7 +34,7 @@ export function SeasonRail({ chapters, next }: { chapters: Chapter[]; next?: Pub
                 <span className="label-mono text-[11px] text-body">
                   {chapter.events.length} event{chapter.events.length === 1 ? '' : 's'}
                 </span>
-                <span className="h-px flex-1 bg-border" aria-hidden="true" />
+                <span className="h-px flex-1 bg-body/20" aria-hidden="true" />
               </span>
             </h2>
 

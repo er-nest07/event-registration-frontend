@@ -76,7 +76,7 @@ export function EventSearch({ value, onValueChange }: Props) {
       ) : (
         <kbd
           aria-hidden="true"
-          className="absolute top-1/2 right-4 hidden h-6 -translate-y-1/2 items-center rounded-md border bg-surface-inset px-2 font-body text-[11px] font-bold text-soft sm:flex"
+          className="absolute top-1/2 right-4 hidden h-6 -translate-y-1/2 items-center rounded-md border bg-surface-inset px-2 font-body text-[11px] font-bold text-body sm:flex"
         >
           /
         </kbd>
